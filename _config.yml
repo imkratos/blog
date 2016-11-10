@@ -78,11 +78,21 @@ duoshuo_shortname: linker
 # 自动生成sitemap
 sitemap:
   path: sitemap.xml
-  baidusitemap: baidusitemap.xml
+baidusitemap: 
+  path: baidusitemap.xml
 
+
+# 社交帐号
 social:
-	github: https://github.com/imkratos
+	GitHub: https://github.com/imkratos
 
-links_title: 友情链接 
+# 友链
+links_title: Links
 links:
   龙哥的小站: http://impguier.github.io/
+
+plugin:
+- hexo-generator-feed
+
+
+

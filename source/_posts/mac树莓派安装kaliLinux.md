@@ -23,6 +23,8 @@ categories: [树莓派]
 - 在软件的图像文件部分点击小文件夹的图标，找到你刚刚下载的Raspbian.img文件。
 - 点击“写入 or write”按键，Win32DiskImager就会帮你完成其它步骤。安装过程结束后，你就可以拔出SD卡然后将其插入树莓派了。
 
+<!--more-->
+
 ### mac or linux 安装
 怎样在OSX下将Kali安装到SD卡上
 - 下载普通版的树莓派专用Kali Linux，并解压img。
