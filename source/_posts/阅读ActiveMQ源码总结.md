@@ -224,7 +224,7 @@ dynamicTopics
 - `(TopicConnectionFactory)ctx.lookup(topicFactory)`这里是去加载实现工厂的类，由于上一个初始化最终返回的是
 ReadOnlyContext对象，所以这里调用的是ReadOnlyContext.lookup方法，我们来看`public Object lookup(String name) throws NamingException {`方法，这里其实就是根据传入的名称，取出相应的工厂，由于我们在启动时传入的工厂类名是
 TopicCF 所以，这里就是取出刚才放入的ActiveMQConnectionFactory工厂类，类图如下
-![类图](http://imkratos.github.io/img/ActiveMQConnectionFactory%E7%B1%BB%E5%9B%BE.png)
+![类图](http://ogflhfadi.bkt.clouddn.com/ActiveMQConnectionFactory%E7%B1%BB%E5%9B%BE.png)
 
 - `conFactory.createTopicConnection()`，这里是调用的ActiveMQConnectionFactory中的方法，该类中初始化了传输协议模式
 ```java
@@ -259,7 +259,7 @@ class=org.apache.activemq.transport.tcp.TcpTransportFactory
 
 ### 服务端启动
 - 以下是服务端启动的类图调用关系:
-![启动类图](http://imkratos.github.io/img/active_server_start_seq.png)
+![启动类图](http://ogflhfadi.bkt.clouddn.com/active_server_start_seq.png)
 
 *这里还了解了java -D 是可以把一些参数设置到JVM中的*
 
@@ -276,11 +276,11 @@ class=org.apache.activemq.xbean.XBeanBrokerFactory
 最终创建一个BrokerService返回，broker中包含了所有上下文环境。
 
 KahaDBPersistenceAdapter 调用关系图
-![调用关系](http://imkratos.github.io/img/active_db_ref.png)
+![调用关系](http://ogflhfadi.bkt.clouddn.com/active_db_ref.png)
 
 KahaDBPersistenceAdapter 用例图
 
-![调用关系](http://imkratos.github.io/img/active_server_db_ref.png)
+![调用关系](http://ogflhfadi.bkt.clouddn.com/active_server_db_ref.png)
 最后启动，至此服务启动完成。
 
 

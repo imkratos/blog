@@ -11,7 +11,7 @@ categories: [java]
 ***初始类***
 从`DefaultListableBeanFactory.java`类的getBean()中，开始对整个工厂类进分析。
 
-![类的关系调用图](http://imkratos.github.io/img/DefaultListableBeanFactory.png)
+![类的关系调用图](http://ogflhfadi.bkt.clouddn.com/DefaultListableBeanFactory.png)
 
 静态导入，如果你多次用到某个工具类的静态方法，可以使用静态导入，这样使代码更整洁美观。
 `SimpleAliasRegistry.java`这个类实现了对Alias的一些操作。
