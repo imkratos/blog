@@ -2,6 +2,7 @@
 title: hexo next主题添加LeanCloud统计功能
 date: 2016-11-10 20:51:47
 tags: [hexo,next,leancloud]
+categories: [hexo]
 ---
 
 #### 遇到的问题

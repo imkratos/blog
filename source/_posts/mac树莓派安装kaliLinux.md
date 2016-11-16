@@ -1,7 +1,7 @@
 title: mac树莓派安装kaliLinux
 date: 2015-12-04 21:13:51
 tags: [树莓派,kali,linux,mac]
-categories: [树莓派]
+categories: [树莓派,linux]
 ---
 树莓派到手大概有一周了，想折腾下kali linux，记录下安装步骤。
 

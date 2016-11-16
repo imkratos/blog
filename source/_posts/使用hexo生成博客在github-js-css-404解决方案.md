@@ -2,6 +2,7 @@
 title: 使用hexo生成博客在github js css 404解决方案
 date: 2016-11-04 13:32:58
 tags: [hexo]
+categories: [hexo]
 ---
 
 ### 问题

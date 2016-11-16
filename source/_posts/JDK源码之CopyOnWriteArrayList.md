@@ -2,6 +2,7 @@
 title: JDK源码之CopyOnWriteArrayList
 date: 2016-11-10 23:14:52
 tags: [java,jdk,jdk源码,CopyOnWriteArrayList]
+categories: [java]
 ---
 
 #### 什么是CopyOnWriteArrayList
@@ -13,7 +14,7 @@ CopyOnWriteArrayList使用的是一种写时复制的算法，也就是说在执
 而是在执行add方法的时候，会把原来的数组复制并且长度+1，然后把新值设置到新的数组中，然后把新数组设置为当前使用状态，由于数组是`volatile`修饰的，所以JVM会自动来保证数组的可见性。
 
 这样使此List在读取时可以不用加锁，提高读取效率，但是在添加的时候效率会很低下。所以我感觉CopyOnWriteArrayList的使用场景就是读多写少的场景，甚至在尽可能的情况下，不去写。这样才能发挥此数据结构的最大优点。
-
+<!--more-->
 
 #### 源码实现
 
@@ -34,8 +35,6 @@ CopyOnWriteArrayList使用的是一种写时复制的算法，也就是说在执
     }
 ```
 默认初始化，是一个0长度的数组。
-
-<!--more-->
 
 ```java
   /**

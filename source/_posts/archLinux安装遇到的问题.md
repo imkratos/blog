@@ -1,6 +1,7 @@
 title: 'archLinux安装遇到的问题'
 date: 2015-12-24 20:25:32
 tags: [ linux,arch ]
+categories: [linux]
 ---
 
  - pacman -Syy 更新之后才能用
