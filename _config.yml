@@ -93,6 +93,11 @@ links:
 
 plugin:
 - hexo-generator-feed
+# search 
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
 
-
-
+avatar: http://ogflhfadi.bkt.clouddn.com/1381068464-1_b.jpg
