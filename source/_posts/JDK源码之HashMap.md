@@ -495,14 +495,61 @@ table = newTab;
 - 对数组进行扩容时对链表，单节点，以及树不同的处理
 
 
+```java
+	if ((p = tab[i = (n - 1) & hash]) == null)
+            tab[i] = newNode(hash, key, value, null);
+```
+这里是数组长度对hash值求与值，如果该位置为null证明该位置没有放入元素，则放入新的元素。
 
+```java
+	Node<K,V> e; K k;
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                e = p;
+```
+这里判断，如果hash值相等并且key值相等，或者key的equest相等，就直接替换该位置的值。
 
+```java
+	else if (p instanceof TreeNode)
+                e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+```
+如果该位置的结构是树的，则调用树的插入方法，关于树的方法博主在这里暂不讨论，因为博主也不是特别理解树结构，以后会补充。
 
+```java
+	for (int binCount = 0; ; ++binCount) {
+                    if ((e = p.next) == null) {
+                        p.next = newNode(hash, key, value, null);
+                        if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                            treeifyBin(tab, hash);
+                        break;
+                    }
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        break;
+                    p = e;
+                }
+```
+如果是链表的话，循环所有的链表，如果有相等的key，直接替换该key对应的值，如果循环到最后也没有相等的，在链表上插入一个新的node节点，同时判断是否满足到达`TREEIFY_THRESHOLD`的条件，如果到达，会把数据结构变更为红黑树。
 
+```java
+	if (e != null) { // existing mapping for key
+                V oldValue = e.value;
+                if (!onlyIfAbsent || oldValue == null)
+                    e.value = value;
+                afterNodeAccess(e);
+                return oldValue;
+            }
+```
+如果到这里e已经存在了，因为e等于新放入的node节点。就把该节点移到链表最后一个，并且直接返回value值。
 
-
-
-
+```java
+	++modCount;
+        if (++size > threshold)
+            resize();
+        afterNodeInsertion(evict);
+        return null;
+```
+记录修改的次数`modCount`是用来控制非法修改hashmap里的值，来抛出`ConcurrentModificationException`。并且判断数组长度是否大于阀值，如果大于了就要调用`resize()`进行扩容，`afterNodeInsertion`没有理解作用是什么，至此put方法全部执行完毕。
 
 
 
