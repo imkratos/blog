@@ -2,6 +2,7 @@
 title: JDK源码之HashMap
 date: 2016-11-12 15:39:10
 tags: [java,jdk源码,hashMap,map]
+categories: [java]
 ---
 
 #### 什么是HashMap
@@ -17,6 +18,8 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
 
 #### 源码实现 jdk1.8版本
 **以下的代码都是代码在上面，解释在下面。**
+
+##### 变量声明
 
 ```java
 	 /**
@@ -59,7 +62,7 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
      */
     static final int TREEIFY_THRESHOLD = 8;
 ```
-当数组单个位置超过此值后，会把数据结构修改为红黑树。小于这个值时，修改为链表。
+当数组单个位置超过此值后，会把数据结构修改为红黑树。
 
 ```java
 	/**
@@ -70,7 +73,7 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
     static final int UNTREEIFY_THRESHOLD = 6;
 ```
 
-???
+当小于这个值时，修改为链表。
 
 ```java
 	/**
@@ -103,7 +106,7 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
 ```
 这个变量是用来存放阀值的，也就是数组长度*0.75的值。
 
-
+##### 初始化
 ```java
 
 	/**
@@ -150,6 +153,7 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
 * 初始化时，如果是空的构造方法，会只设置负载因子的值为默认的0.75.
 * 如果指定的`initialCapacity`超过`MAXIMUM_CAPACITY `，则值就为`MAXIMUM_CAPACITY `
 * tableSizeFor函数会求出一个值作为HashMap的容量
+ 
 ```java
 	/**
      * Returns a power of two size for the given target capacity.
@@ -166,6 +170,7 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
 ```
 * 初始化完毕
 
+##### put方法
 ```java
 	public V put(K key, V value) {
         return putVal(hash(key), key, value, false, true);
@@ -229,6 +234,8 @@ jdk1.8之后对此做了优化，因为如果发生了数据倾斜，可能会�
 ```
 如果数组没有初始化或者长度为0，则进行初始化。	
 `resize()`方法中的初始化代码
+
+##### 扩容机制
 ```java
 	/**
      * Initializes or doubles table size.  If null, allocates in
@@ -405,6 +412,8 @@ table = newTab;
 ```
 - 到第7行为止，是表示如果老数组的下标位置只有一个节点没有链表也没有红黑树，就会把该位置的数组赋值给新数组，在新数组的位置是hash值&数组的长度(这里我以前一直认为是取余)。
 - 如果是红黑树，则进行树拆分`((TreeNode<K,V>)e).split(this, newTab, j, oldCap);`
+
+##### 红黑树
 ```java
 	final void split(HashMap<K,V> map, Node<K,V>[] tab, int index, int bit) {
             TreeNode<K,V> b = this;
@@ -551,8 +560,76 @@ table = newTab;
 ```
 记录修改的次数`modCount`是用来控制非法修改hashmap里的值，来抛出`ConcurrentModificationException`。并且判断数组长度是否大于阀值，如果大于了就要调用`resize()`进行扩容，`afterNodeInsertion`没有理解作用是什么，至此put方法全部执行完毕。
 
+##### get方法
+```java
+	final Node<K,V> getNode(int hash, Object key) {
+        Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+        if ((tab = table) != null && (n = tab.length) > 0 &&
+            (first = tab[(n - 1) & hash]) != null) {
+            if (first.hash == hash && // always check first node
+                ((k = first.key) == key || (key != null && key.equals(k))))
+                return first;
+            if ((e = first.next) != null) {
+                if (first instanceof TreeNode)
+                    return ((TreeNode<K,V>)first).getTreeNode(hash, key);
+                do {
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        return e;
+                } while ((e = e.next) != null);
+            }
+        }
+        return null;
+    }
+```
+put方法核心的代码是这里，这里是判断如果在数据里找到当前key的位置之后，首先判断hash值，和key是否都相等，如果都相等，直接返回此对象，如果不相等还分2种情况一种是树结构，会调用树的查找方法，另外一种是链表，则会对链表不断的循环判断，直到找到相等元素为止。
+如果最后都没有找到，则返回null。
 
-
-
+##### remove方法
+```java
+	final Node<K,V> removeNode(int hash, Object key, Object value,
+                               boolean matchValue, boolean movable) {
+        Node<K,V>[] tab; Node<K,V> p; int n, index;
+        if ((tab = table) != null && (n = tab.length) > 0 &&
+            (p = tab[index = (n - 1) & hash]) != null) {
+            Node<K,V> node = null, e; K k; V v;
+            if (p.hash == hash &&
+                ((k = p.key) == key || (key != null && key.equals(k))))
+                node = p;
+            else if ((e = p.next) != null) {
+                if (p instanceof TreeNode)
+                    node = ((TreeNode<K,V>)p).getTreeNode(hash, key);
+                else {
+                    do {
+                        if (e.hash == hash &&
+                            ((k = e.key) == key ||
+                             (key != null && key.equals(k)))) {
+                            node = e;
+                            break;
+                        }
+                        p = e;
+                    } while ((e = e.next) != null);
+                }
+            }
+            if (node != null && (!matchValue || (v = node.value) == value ||
+                                 (value != null && value.equals(v)))) {
+                if (node instanceof TreeNode)
+                    ((TreeNode<K,V>)node).removeTreeNode(this, tab, movable);
+                else if (node == p)
+                    tab[index] = node.next;
+                else
+                    p.next = node.next;
+                ++modCount;
+                --size;
+                afterNodeRemoval(node);
+                return node;
+            }
+        }
+        return null;
+    }
+```
+remove方法和get方法类似，核心代码是首先也是在数组里找位置，如果当前位置首个节点是这个key，就把值给node，如果当前值不是，则进行后续查找。如果是树，调用树的查找方法，把查找到的值给node，如果是链表，则对链表进行循环查找，找到之后把值给node。
+最后判断如果node不这代，并且value值相等。则会进行删除动作，如果是树节构就调用树的删除方法，如果数组的位置首节点是要删除的值，则直接把next的值给当前位置，如果是链表后续的值，则把要删除的key的下一个节点，和上一个节点连接，自己就会被删除掉。
+最后增加修改次数，size减掉。返回删除的节点。
 
 
