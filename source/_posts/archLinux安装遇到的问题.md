@@ -1,6 +1,6 @@
 title: 'archLinux安装遇到的问题'
 date: 2015-12-24 20:25:32
-tags: [ linux,arch ]
+tags: [linux,arch ]
 categories: [linux]
 ---
 
